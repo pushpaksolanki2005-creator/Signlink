@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SignLink - Global Deaf Video Connect</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #121212;
+      color: #ffffff;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    header {
+      background-color: #1f1f1f;
+      width: 100%;
+      padding: 20px 0;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+    h1 { margin: 0; color: #00d2ff; font-size: 2.5rem; }
+    p.subtitle { color: #aaaaaa; font-size: 1.1rem; margin-top: 5px; }
+    
+    .container {
+      width: 90%;
+      max-width: 1000px;
+      margin: 30px auto;
+      text-align: center;
+    }
+    
+    /* Filter Screen Setup */
+    #setup-screen {
+      background: #1e1e1e;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+    .filter-group {
+      margin: 20px 0;
+    }
+    label { font-size: 1.2rem; margin-right: 10px; }
+    select {
+      padding: 10px 15px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      background: #333;
+      color: white;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(45deg, #00d2ff, #0078ff);
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      font-size: 1.5rem;
+      font-weight: bold;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 20px;
+    }
+    .btn-primary:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(0, 210, 255, 0.6);
+    }
+
+    /* Video Screen Setup */
+    #video-screen {
+      display: none; /* Hidden until button is clicked */
+      width: 100%;
+    }
+    .video-grid {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .video-box {
+      flex: 1;
+      min-width: 300px;
+      height: 350px;
+      background: #000;
+      border-radius: 15px;
+      overflow: hidden;
+      position: relative;
+      border: 3px solid #333;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .label {
+      position: absolute;
+      bottom: 15px;
+      left: 15px;
+      background: rgba(0,0,0,0.7);
+      padding: 5px 15px;
+      border-radius: 20px;
+      font-weight: bold;
+    }
+
+    /* Action Buttons */
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 10px;
+    }
+    .btn {
+      padding: 12px 25px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .btn-next { background-color: #0078ff; color: white; }
+    .btn-friend { background-color: #00c853; color: white; }
+    .btn-report { background-color: #ff3d00; color: white; }
+    
+    /* Visual Alert Box */
+    .visual-status {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      background: #2a2a2a;
+      color: #00d2ff;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>SignLink 🌐</h1>
+    <p class="subtitle">Free Global Video Connections for the Deaf Community</p>
+  </header>
+
+  <div class="container">
+    
+    <!-- STEP 1: FILTERS -->
+    <div id="setup-screen">
+      <h2>Choose Your Preferences</h2>
+      
+      <div class="filter-group">
+        <label for="sign-lang">Sign Language:</label>
+        <select id="sign-lang">
+          <option value="ISL">International Sign (IS)</option>
+          <option value="Any">Any / Visual Gestures</option>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <label for="country">Location:</label>
+        <select id="country">
+          <option value="Global">Worldwide 🌍</option>
+          <option value="India">India</option>
+        </select>
+      </div>
+
+      <p style="color: #ccc; margin-top: 25px;">🔒 By clicking below, you promise to be respectful, kind, and friendly.</p>
+      
+      <button class="btn-primary" onclick="startConnecting()">Start Connecting 📹</button>
+    </div>
+
+    <!-- STEP 2: VIDEO ROOM -->
+    <div id="video-screen">
+      <div class="video-grid">
+        <!-- User's own camera -->
+        <div class="video-box" style="border-color: #00d2ff;">
+          <video id="my-video" autoplay muted playsinline></video>
+          <div class="label">You</div>
+        </div>
+        
+        <!-- Partner's simulated video box -->
+        <div class="video-box" style="border-color: #00c853;">
+          <div style="text-align: center; color: #888;">
+            <p style="font-size: 3rem; margin: 0;">⏳</p>
+            <p>Searching for a partner matching your filters...</p>
+          </div>
+          <div class="label" style="background: #00c853; color: black;">Partner</div>
+        </div>
+      </div>
+
+      <div class="visual-status" id="status-box">
+        🔎 Status: Looking for someone around the world...
+      </div>
+
+      <div class="controls">
+        <button class="btn btn-next" onclick="nextPartner()">⏭️ Next Person</button>
+        <button class="btn btn-friend" onclick="addFriend()">➕ Add Friend</button>
+        <button class="btn btn-report" onclick="reportUser()">⚠️ Report / Block</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    async function startConnecting() {
+      // Hide setup, show video screen
+      document.getElementById('setup-screen').style.display = 'none';
+      document.getElementById('video-screen').style.display = 'block';
+
+      // Turn on user webcam!
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+        const videoElement = document.getElementById('my-video');
+        videoElement.srcObject = stream;
+      } catch (err) {
+        alert("Camera access was blocked or not found. Please allow camera access to use video chat!");
+        console.error("Error accessing camera: ", err);
+      }
+    }
+
+    function nextPartner() {
+      const status = document.getElementById('status-box');
+      status.style.backgroundColor = "#0078ff";
+      status.style.color = "white";
+      status.innerHTML = "⏭️ Disconnected. Searching for a new friend...";
+    }
+
+    function addFriend() {
+      const status = document.getElementById('status-box');
+      status.style.backgroundColor = "#00c853";
+      status.style.color = "black";
+      status.innerHTML = "💚 Friend request sent! If they click 'Add Friend' too, you'll stay connected.";
+    }
+
+    function reportUser() {
+      const status = document.getElementById('status-box');
+      status.style.backgroundColor = "#ff3d00";
+      status.style.color = "white";
+      status.innerHTML = "🛡️ User reported and blocked. You are safe. Finding a new connection...";
+    }
+  </script>
+  <footer>
+    <p style="left: auto;">Pushpak Solanki</p> 
+  </footer>
+
+</body>
+</html>
